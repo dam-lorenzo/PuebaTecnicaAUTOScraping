@@ -21,7 +21,6 @@ class Crawler():
     def run(self) -> None:
         for category in self.__get_categories():
             self.__scrap_products(category)
-            self.__save_csv()
             if len(self.scraped_products) > 300:
                 self.__save_csv()
         if self.scraped_products:
