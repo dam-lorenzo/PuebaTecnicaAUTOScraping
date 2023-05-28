@@ -23,7 +23,8 @@ class Payload():
             priceValidUntil: str        = None,
             stock: int                  = None,
             paymentOptions: list        = None,
-            releaseDate: str            = None
+            releaseDate: str            = None,
+            createdAt: str              = None
         ) -> None:
         self.id                     = _id
         self.productReference       = productReference
@@ -45,6 +46,7 @@ class Payload():
         self.stock                  = stock
         self.paymentOptions         = paymentOptions
         self.releaseDate            = releaseDate
+        self.createdAt              = createdAt
 
     def create_payload(self):
         return {
@@ -67,7 +69,7 @@ class Payload():
             PayloadKeys.priceValidUntil:  self.priceValidUntil,
             PayloadKeys.stock:            self.stock,
             PayloadKeys.paymentOptions:   self.paymentOptions,
-            PayloadKeys.createdAt:        datetime.now().strftime('%Y-%m-%d'),
+            PayloadKeys.createdAt:        self.createdAt,
             PayloadKeys.timestamp:        datetime.now().now()
         }
 
