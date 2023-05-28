@@ -2,6 +2,7 @@ import os
 import csv
 
 from typing                 import Generator
+from datetime               import datetime
 
 from html2text              import html2text
 from utils.api_keys         import ApiKeys
@@ -15,6 +16,7 @@ class Crawler():
 
     def __init__(self) -> None:
         self.requester = RequestHandler()
+        self.created_at = datetime.now().strftime('%Y-%m-%d')
         self.scraped_products = list()
         self.scraped_ids = set()
 
@@ -74,6 +76,7 @@ class Crawler():
             payload.stock = sellers[ApiKeys.commertialOffer][ApiKeys.AvailableQuantity]
             payload.paymentOptions = self.__get_payment_options(sellers[ApiKeys.commertialOffer][ApiKeys.PaymentOptions])
             payload.releaseDate = product[ApiKeys.releaseDate]
+            payload.createdAt = self
             self.scraped_products.append(payload.create_payload())
         print()
         self.__scrap_products(slug, _from + URL.steps + 1)
@@ -116,8 +119,8 @@ class Crawler():
         if not os.path.exists(CSVS_PATH):
             os.mkdir(CSVS_PATH)
         headers = list(self.scraped_products[0].keys())
-        path_file = os.path.join(CSVS_PATH, 'test.csv')
-        with open(path_file, 'w') as file:
+        path_file = os.path.join(CSVS_PATH, f'test_{self.created_at.replace("-", "")}.csv')
+        with open(path_file, 'a') as file:
             writer = csv.DictWriter(file, fieldnames=headers, delimiter=';')
             writer.writeheader()
             writer.writerows(self.scraped_products)
