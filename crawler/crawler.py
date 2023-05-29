@@ -76,7 +76,7 @@ class Crawler():
             payload.stock = sellers[ApiKeys.commertialOffer][ApiKeys.AvailableQuantity]
             payload.paymentOptions = self.__get_payment_options(sellers[ApiKeys.commertialOffer][ApiKeys.PaymentOptions])
             payload.releaseDate = product[ApiKeys.releaseDate]
-            payload.createdAt = self
+            payload.createdAt = self.created_at
             self.scraped_products.append(payload.create_payload())
         print()
         self.__scrap_products(slug, _from + URL.steps + 1)
