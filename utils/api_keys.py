@@ -37,3 +37,5 @@ class ApiKeys():
     total                   = 'total'
     interestRate            = 'interestRate'
     dueDate                 = 'dueDate'
+    stores                  = 'stores'
+    id                      = 'id'
