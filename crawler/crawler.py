@@ -83,7 +83,6 @@ class Crawler():
             payload.releaseDate = product[ApiKeys.releaseDate]
             payload.createdAt = self.created_at
             self.scraped_products.append(payload.create_payload())
-        print()
         self.__scrap_products(slug, store_index=store_index, _from = _from + URL.steps + 1)
 
     def __get_product_categories(self, categories: list) -> list:
