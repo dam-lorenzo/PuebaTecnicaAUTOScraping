@@ -1,3 +1,4 @@
+import json
 import os
 import csv
 
@@ -21,12 +22,16 @@ class Crawler():
         self.scraped_ids = set()
 
     def run(self) -> None:
-        for category in self.__get_categories():
-            self.__scrap_products(category)
-            if len(self.scraped_products) > 300:
-                self.__save_csv()
-        if self.scraped_products:
-            self.__save_csv()
+        for store, store_index, header in self.get_stores():
+            print(f'Scraping {store}')
+            self.requester.update_headers(header)
+            for category in self.__get_categories():
+                self.__scrap_products(category, store_index)
+                if len(self.scraped_products) > 300:
+                    self.__save_csv(store)
+            if self.scraped_products:
+                self.__save_csv(store)
+            self.scraped_ids.clear()
         print('Scraping finished')
 
     def __get_categories(self) -> Generator:
@@ -40,8 +45,8 @@ class Crawler():
                     print(f'Children {children[ApiKeys.name]} {i + 1}/{len(categorie[ApiKeys.children])}')
                     yield children_slug
 
-    def __scrap_products(self, slug: str, _from: int = 0) -> None:
-        category_url = URL.get_products_url(slug, _from)
+    def __scrap_products(self, slug: str, store_index: str, _from: int = 0) -> None:
+        category_url = URL.get_products_url(slug, _from, store=store_index)
         products = self.requester.get_response(category_url)
         if not products:
             return
@@ -79,7 +84,7 @@ class Crawler():
             payload.createdAt = self.created_at
             self.scraped_products.append(payload.create_payload())
         print()
-        self.__scrap_products(slug, _from + URL.steps + 1)
+        self.__scrap_products(slug, store_index=store_index, _from = _from + URL.steps + 1)
 
     def __get_product_categories(self, categories: list) -> list:
         format_categories = {cat for item in categories for cat in item.split('/') if cat}
@@ -115,13 +120,24 @@ class Crawler():
             })
         return payment_list
 
-    def __save_csv(self) -> None:
+    def __save_csv(self, name: str) -> None:
+        file_name = f'{name.replace(" ", "")}_{self.created_at.replace("-", "")}.csv'
         if not os.path.exists(CSVS_PATH):
             os.mkdir(CSVS_PATH)
         headers = list(self.scraped_products[0].keys())
-        path_file = os.path.join(CSVS_PATH, f'test_{self.created_at.replace("-", "")}.csv')
+        path_file = os.path.join(CSVS_PATH, file_name)
         with open(path_file, 'a') as file:
             writer = csv.DictWriter(file, fieldnames=headers, delimiter=';')
             writer.writeheader()
             writer.writerows(self.scraped_products)
-        return
+        self.scraped_products.clear()
+    
+    def get_stores(self) -> Generator:
+        soup = self.requester.get_soup(URL.STORES)
+        json_tag = soup.find("div", id="stores-data")
+        stores = json.loads(json_tag.text)
+        for i, store in enumerate(stores[ApiKeys.stores]):
+            yield store[ApiKeys.name], str(i+1), {
+                'Cookie': f'userSelectedStore=true; storeSelectorId={store[ApiKeys.id]};'
+            }
+        
