@@ -1,6 +1,7 @@
 import time
 import requests
 
+from bs4 import BeautifulSoup
 from typing import Optional, Union
 
 class RequestHandler():
@@ -43,3 +44,10 @@ class RequestHandler():
         method = getattr(res, resType)
         if callable(method):
             return method()
+        else:
+            return method
+        
+    def get_soup(self, url: str, **kwargs) -> BeautifulSoup:
+        kwargs.pop('resType', None)
+        html = self.get_response(url=url, resType='text', **kwargs)
+        return BeautifulSoup(html, 'lxml')
