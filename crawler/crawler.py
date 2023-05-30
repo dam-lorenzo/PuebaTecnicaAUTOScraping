@@ -64,7 +64,7 @@ class Crawler():
             payload.id = _id
             payload.productReference = product[ApiKeys.productId]
             payload.name = name
-            payload.completeName = item[ApiKeys.complementName]
+            payload.completeName = item[ApiKeys.nameComplete]
             payload.brand = product[ApiKeys.brand]
             payload.brandId = product[ApiKeys.brandId]
             payload.categories = self.__get_product_categories(product[ApiKeys.categories])

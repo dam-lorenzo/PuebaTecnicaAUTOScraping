@@ -8,7 +8,7 @@ class ApiKeys():
     items                   = 'items'
     productId               = 'productId'
     itemId                  = 'itemId'
-    complementName          = 'complementName'
+    nameComplete            = 'nameComplete'
     brand                   = 'brand'
     brandId                 = 'brandId'
     categories              = 'categories'
