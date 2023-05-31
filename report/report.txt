@@ -11,3 +11,9 @@ Viendo como funciona la seleccion de sucursal, encontre un json embebido en el h
 Estoy terminando de hacer algunas pruebas, creo que el cambio de sucursal se hace a traves de las cookies (tambien esta el parametro sc en la url de la api, creo que deberia sacarlo, este usa el indice de la sucursal en la lista del json, me parece un tanto confuso) pero modificando este paramentro y pasando el id de la sucursal se haria el cambio. Haciendo pruebas con postman todavia no termino de asegurarme de que vaya a funcionar
 
 Despues de varias pruebas con distintas combinaciones de endpoint y headers, consegui hacer el cambio de sucursal usando los metodos que mencione antes, tanto la Cookie, como el indice de sucursal en la url de la api. Ya tendria todo el crawler listo voy a dejarlo correr para hacer un analisis de la metadata que se esta trayendo a ver si no hay que ajustar algo
+
+Tuve que ajustar una de las keys de la api, no estaba obteniendo el nombre completo de los productos (que era mi idea) sino que estaba obteniendo otro texto que no me parece relevante.
+
+Agregue la seleccion de sucursal, no estaba muy convencido de como hacerlo asique agregue distintas formas de seleccion, por indice de sucursal, por nombre (que puede abarcar mas de una en caso de que se elija solo la provincia, esto esta hecho adrede) o directamente por un input donde se muestran todas las opciones.
+
+Ahora solo me queda desarrollar los tests
