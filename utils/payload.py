@@ -70,7 +70,7 @@ class Payload():
             PayloadKeys.stock:            self.stock,
             PayloadKeys.paymentOptions:   self.paymentOptions,
             PayloadKeys.createdAt:        self.createdAt,
-            PayloadKeys.timestamp:        datetime.now().now()
+            PayloadKeys.timestamp:        datetime.now().isoformat()
         }
 
     def __clean_price(self, price):
