@@ -17,3 +17,6 @@ output/
 *.log
 *.swp
 .DS_Store
+
+# Jupyter Notebook
+*.ipynb
