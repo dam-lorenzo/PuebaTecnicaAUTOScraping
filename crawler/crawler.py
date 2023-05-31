@@ -148,7 +148,7 @@ class Crawler():
                     print('La opcion no es valida')
         for i, store in enumerate(stores[ApiKeys.stores]):
             store_name = store[ApiKeys.name]
-            if self.store and self.store not in store_name:
+            if self.store and self.store.lower() not in store_name.lower():
                 continue
             elif (self.use_input or self.store_index) and i != self.store_index:
                 continue
