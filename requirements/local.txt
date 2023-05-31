@@ -1,3 +1,4 @@
 -r base.txt
 
 jupyter==1.0.0
+pandas==2.0.2
