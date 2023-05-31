@@ -4,7 +4,7 @@ Prueba tecnica solicitada por la empresa AUTOScraping para el puesto python deve
 
 ## Descripción
 
-El objetivo es realizar un crawler de la pagina https://www.hiperlibertad.com.ar. El mismo debe extraer todos los productos disponibles, clasificandolos por sucursal para luego almacenarlos en un archivo csv.
+El objetivo es realizar un crawler de la pagina [Hipermercado Libertad](https://www.hiperlibertad.com.ar). El mismo debe extraer todos los productos disponibles, clasificandolos por sucursal para luego almacenarlos en un archivo csv.
 
 ## Requisitos Previos
 
