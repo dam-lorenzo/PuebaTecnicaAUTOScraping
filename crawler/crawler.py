@@ -15,9 +15,12 @@ CSVS_PATH = os.path.join('.', 'data')
 
 class Crawler():
 
-    def __init__(self) -> None:
+    def __init__(self, store_name: str = None, store_index: str = None, use_input: bool = False) -> None:
         self.requester = RequestHandler()
         self.created_at = datetime.now().strftime('%Y-%m-%d')
+        self.store = store_name
+        self.use_input = use_input
+        self.store_index = store_index
         self.scraped_products = list()
         self.scraped_ids = set()
 
@@ -135,8 +138,20 @@ class Crawler():
         soup = self.requester.get_soup(URL.STORES)
         json_tag = soup.find("div", id="stores-data")
         stores = json.loads(json_tag.text)
+        if self.use_input:
+            stores_names = [f'\n\t{i+1}. {store[ApiKeys.name]}' for i, store in enumerate(stores[ApiKeys.stores])]
+            while True:
+                try:
+                    self.store_index = int(input(f"Elija una opcion:\n{''.join(stores_names)}\n\nOpcion: ")) - 1
+                    break
+                except ValueError:
+                    print('La opcion no es valida')
         for i, store in enumerate(stores[ApiKeys.stores]):
-            yield store[ApiKeys.name], str(i+1), {
+            store_name = store[ApiKeys.name]
+            if self.store and self.store not in store_name:
+                continue
+            elif (self.use_input or self.store_index) and i != self.store_index:
+                continue
+            yield store_name, str(i+1), {
                 'Cookie': f'userSelectedStore=true; storeSelectorId={store[ApiKeys.id]};'
             }
-        
