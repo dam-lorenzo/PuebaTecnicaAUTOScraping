@@ -25,6 +25,8 @@ class Crawler():
         self.scraped_ids = set()
 
     def run(self) -> None:
+        """Runs the crawler
+        """
         for store, store_index, header in self.get_stores():
             print(f'Scraping {store}')
             self.requester.update_headers(header)
@@ -38,6 +40,11 @@ class Crawler():
         print('Scraping finished')
 
     def __get_categories(self) -> Generator:
+        """Gets the slug of each category to be used in the products api
+
+        Yields:
+            Generator: string with the category slug
+        """
         url_categories = URL.CATEGORIES
         categories = self.requester.get_response(url_categories)
         for categorie in categories:
@@ -49,6 +56,13 @@ class Crawler():
                     yield children_slug
 
     def __scrap_products(self, slug: str, store_index: str, _from: int = 0) -> None:
+        """Recursive method
+        Iterate over each category until obtaining all the products it contains.
+        Args:
+            slug (str): slug of the category
+            store_index (str): index of the store, obtained from get_store method
+            _from (int, optional): Paginator that iterates through the entire category, start from 0. Defaults to 0.
+        """
         category_url = URL.get_products_url(slug, _from, store=store_index)
         products = self.requester.get_response(category_url)
         if not products:
@@ -89,16 +103,48 @@ class Crawler():
         self.__scrap_products(slug, store_index=store_index, _from = _from + URL.steps + 1)
 
     def __get_product_categories(self, categories: list) -> list:
+        """Clean the categories list obtained from the api
+
+        Args:
+            categories (list): categories list obtained from the api
+
+        Returns:
+            list: list with clean and unique categories
+        """
         format_categories = {cat for item in categories for cat in item.split('/') if cat}
         return list(format_categories)
     
     def __get_description(self, description: str) -> str:
+        """Converts an html string into a normal string
+
+        Args:
+            description (str): string with html
+
+        Returns:
+            str: readable text
+        """
         return html2text(description)
 
     def __get_images(self, images: list) -> list:
+        """Extracts the image URLs from a list of image dictionaries.
+
+        Args:
+        - images: List of image dictionaries.
+
+        Returns:
+        - List of image URLs extracted from the input.
+        """
         return [item[ApiKeys.imageUrl] for item in images]
     
     def __get_payment_options(self, payment_options: list) -> list:
+        """Process the payment options and generate a structured list of payments.
+
+        Args:
+        - payment_options: Payment options (dict).
+
+        Returns:
+        - payment_list: Processed list of payments (list).
+        """
         payment_list = list()
         installment_options = dict()
         installments = list()
@@ -123,18 +169,31 @@ class Crawler():
         return payment_list
 
     def __save_csv(self, name: str) -> None:
+        """save the current scraping into a csv file
+
+        Args:
+            name (str): name of the curren store
+        """
         file_name = f'{name.replace(" ", "")}_{self.created_at.replace("-", "")}.csv'
         if not os.path.exists(CSVS_PATH):
             os.mkdir(CSVS_PATH)
+        file_exists = os.path.isfile(path_file)
         headers = list(self.scraped_products[0].keys())
         path_file = os.path.join(CSVS_PATH, file_name)
         with open(path_file, 'a') as file:
             writer = csv.DictWriter(file, fieldnames=headers, delimiter=';')
-            writer.writeheader()
+            if not file_exists:
+                writer.writeheader()
             writer.writerows(self.scraped_products)
         self.scraped_products.clear()
     
     def get_stores(self) -> Generator:
+        """Generator function that yields store information based on the specified criteria.
+
+        Yields:
+        - Tuple containing store name, index, and request headers.
+
+        """
         soup = self.requester.get_soup(URL.STORES)
         json_tag = soup.find("div", id="stores-data")
         stores = json.loads(json_tag.text)
