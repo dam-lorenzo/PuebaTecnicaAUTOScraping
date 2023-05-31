@@ -98,7 +98,9 @@ Los campos que se relevan de cada producto son:
 
 Para tener en cuenta, los requerimientos locales los arme debido que use un jupyther notebook para hacer un analisis de los csvs que se creaban con el crawler, para poder ver que no me faltara limpiar algun dato, o hay algun problema con algun campo. Con hacer una instalacion unicamente de los requerimientos base alcanza para ejecutar el proyecto.
 
-Desisti de usar docker como entorno de desarrollo debido a que no use librerias muy complejas que requirieran de una configuracion adicional, como pueden ser selenium o playwright
+Desisti de usar docker como entorno de desarrollo debido a que no use librerias muy complejas que requirieran de una configuracion adicional, como pueden ser selenium o playwright.
+
+Tambien agregue un archivo llamado `report.txt` en el cual fui escribiendo un reporte de lo que iba desarrollando y pensando a medida que realizaba el desafio
 
 ## Información Adicional
 
