@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 from typing import Optional, Union
 
+from config import config
+
 class RequestHandler():
 
     def __init__(self) -> None:
@@ -12,12 +14,24 @@ class RequestHandler():
     @property
     def headers(self) -> dict:
         return self.__session.headers
+    
+    @property
+    def proxy(self) -> dict:
+        return self.__session.proxy
 
     def update_headers(self, headers: dict, overwrite: Optional[bool] = False) -> None:
         if overwrite:
             self.__session.headers = headers
         else:
             self.__session.headers.update(headers)
+
+    def use_proxy(self) -> None:
+        proxy_config = config()['proxy']
+        proxy = {
+            'http': f"http://{proxy_config['user']}:{proxy_config['pass']}@{proxy_config['host']}:{proxy_config['port']}",
+            'https': f"http://{proxy_config['user']}:{proxy_config['pass']}@{proxy_config['host']}:{proxy_config['port']}"
+        }
+        self.__session.proxy = proxy
 
     def get_response(
             self,
